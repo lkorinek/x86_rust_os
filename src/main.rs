@@ -2,27 +2,26 @@
 #![no_main] // disable all Rust-level entry points
 
 use core::panic::PanicInfo;
+use crate::vga_buffer::{Color, ScreenWriter};
 
-static HELLO: &[u8] = b"Hello World!";
+mod vga_buffer;
 
 // Ensure that the Rust compiler really outputs a function with the name _start.
 // Without the compiler would generate some cryptic _ZN3blog_os4_start7hb173feds945531caE
 // to give every function a unique name.
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    let vga_buffer = 0xb8000 as *mut u8; // Address of VGA buffer
+    use core::fmt::Write;
 
-    for (i, &byte) in HELLO.iter().enumerate() {
-        unsafe {
-            *vga_buffer.offset(i as isize * 2) = byte;
-            *vga_buffer.offset(i as isize * 2 + 1) = 0x0f; // Color attribute
-        }
-    }
+    println!("Hello World!");
+    println!("My favorite numbers are {} and {}", 3, 13);
+    panic!("some panic");
     loop {}
 }
 
 /// This function is called on panic.
 #[panic_handler]
-fn panic(_info: &PanicInfo) -> ! {
+fn panic(info: &PanicInfo) -> ! {
+    println!("{}", info);
     loop {}
 } // Diverging function "-> !" never returns
