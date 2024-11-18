@@ -12,9 +12,9 @@ use core::panic::PanicInfo;
 // to give every function a unique name.
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
-    println!("Hello World!");
-    println!("My favorite numbers are {} and {}", 3, 13);
-
+    println!("Booting x86 Rust OS!");
+    x86_rust_os::init();
+    
     #[cfg(test)]
     test_main();
 
